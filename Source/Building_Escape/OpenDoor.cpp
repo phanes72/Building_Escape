@@ -29,11 +29,16 @@ void UOpenDoor::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompon
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	//FRotator CurrentRotation = GetOwner() -> GetActorRotation();
-	//CurrentRotation.Add(0.0, 90.0, 0.0);
-	//CurrentRotation.Yaw = -90.f;
-	//FRotator OpenDoor {0.f, -90.f, 0.f};
+	FRotator CurrentRotation = GetOwner() -> GetActorRotation();	
+	float CurrentYaw = CurrentRotation.Yaw;
+	FRotator OpenDoor {0.f, 90.f, 0.f};
+	float TargetYaw = -90.f;
+	OpenDoor.Yaw = FMath::FInterpTo(CurrentYaw, TargetYaw, DeltaTime, 1);
+	GetOwner()->SetActorRotation(OpenDoor); 
 
-	// GetOwner()->SetActorRotation(OpenDoor);
+
+	//Log current roation values
+	UE_LOG(LogTemp, Warning, TEXT("%s"), *CurrentRotation.ToString());
+	UE_LOG(LogTemp, Warning, TEXT("The YAW is %f"), CurrentRotation.Yaw);
 }
 
