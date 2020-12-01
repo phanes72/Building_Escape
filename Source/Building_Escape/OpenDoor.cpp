@@ -24,6 +24,12 @@ void UOpenDoor::BeginPlay()
 	CurrentYaw = InitialYaw;
 	TargetYaw += InitialYaw;
 
+
+	if(!PressurePlate)
+	{
+		FString Actor = GetOwner() -> GetName();
+		UE_LOG(LogTemp, Error, TEXT("%s is not configured for the pressure plate!"), *Actor);
+	}
 }
 
 
@@ -32,7 +38,7 @@ void UOpenDoor::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompon
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 	
-	if (PressurePlate-> IsOverlappingActor(ActorThatOpens))
+	if (PressurePlate && PressurePlate-> IsOverlappingActor(ActorThatOpens))
 	{
 		OpenDoor(DeltaTime);
 	}	
