@@ -25,8 +25,7 @@ public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
-  //private:
-  	//AController Controller;
-  	//AActor Actor;
+private:
+  float Reach = 100.f;
 		
 };
