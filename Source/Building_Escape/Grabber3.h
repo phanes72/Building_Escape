@@ -7,6 +7,7 @@
 #include "Grabber3.generated.h"
 
 
+
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class BUILDING_ESCAPE_API UGrabber3 : public UActorComponent
 {
@@ -24,5 +25,8 @@ public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
+  //private:
+  	//AController Controller;
+  	//AActor Actor;
 		
 };
