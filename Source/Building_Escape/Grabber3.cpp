@@ -37,17 +37,26 @@ void UGrabber3::BeginPlay()
 	}
 
 	InputComponent = GetOwner() -> FindComponentByClass<UInputComponent>();
-	if(InputComponent)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Input component found"), *GetOwner()->GetName());
-		InputComponent->BindAction("Grab", IE_Pressed, this, &UGrabber3::Grab);
+	if (InputComponent)
+	{		
+		InputComponent->BindAction("Grab", IE_Pressed, this, &UGrabber3::Grab); // This is the address of the Grab function which is contained in UGrabber3
+																				// it doesn't actually call the function but rather tells the method where to go to call
+																				// call it when we press our R Mouse Button
+
+		InputComponent->BindAction("Grab", IE_Released, this, &UGrabber3::Release);
 	}
+
 			
 }
 
 void UGrabber3::Grab()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Grabber Pressed"));
+}
+
+void UGrabber3::Release()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Grabber Released"));
 }
 
 // Called every frame
