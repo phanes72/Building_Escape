@@ -29,14 +29,26 @@ void UGrabber3::BeginPlay()
 	PhysicsHandle = GetOwner() -> FindComponentByClass<UPhysicsHandleComponent>();
 	if (PhysicsHandle)
 	{
-		// Physics handle is found
-	} else 
+
+	} 
+	else 
 	{
 		UE_LOG(LogTemp, Error, TEXT("No Physics Handle componenet found: %s"), *GetOwner()->GetName());
 	}
-	
+
+	InputComponent = GetOwner() -> FindComponentByClass<UInputComponent>();
+	if(InputComponent)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Input component found"), *GetOwner()->GetName());
+		InputComponent->BindAction("Grab", IE_Pressed, this, &UGrabber3::Grab);
+	}
+			
 }
 
+void UGrabber3::Grab()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Grabber Pressed"));
+}
 
 // Called every frame
 void UGrabber3::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
@@ -53,9 +65,6 @@ void UGrabber3::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompon
 	);
 
 	
-	// UE_LOG(LogTemp, Warning, TEXT("Location - %s"), *PlayerViewPointLocation.ToString());
-	// UE_LOG(LogTemp, Warning, TEXT("Rotation - %s"), *PlayerViewPointRotation.ToString());
-
 	// Draw a line from player showing the reach	
 	FVector LineTraceEnd = PlayerViewPointLocation + PlayerViewPointRotation.Vector() * Reach;
 
@@ -93,8 +102,7 @@ void UGrabber3::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompon
 	if (ActorHit)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Line trace has hit %s"), *(ActorHit->GetName()));
-	}
-	
+	}	
 
 }
 
