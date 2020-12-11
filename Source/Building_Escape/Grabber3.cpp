@@ -5,8 +5,6 @@
 #include "Engine/World.h"
 #include "GameFramework/PlayerController.h"
 
-
-
 #define OUT
 
 // Sets default values for this component's properties
@@ -16,7 +14,6 @@ UGrabber3::UGrabber3()
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
 
-	// ...
 }
 
 
@@ -25,7 +22,29 @@ void UGrabber3::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	// Checking for Physics Handle Component
+	FindPhysicsHandle();
+	SetupInputComponent();
+
+			
+}
+
+void UGrabber3::SetupInputComponent()
+{
+	InputComponent = GetOwner() -> FindComponentByClass<UInputComponent>();
+	if (InputComponent)
+	{		
+		InputComponent->BindAction("Grab", IE_Pressed, this, &UGrabber3::Grab); // This is the address of the Grab function which is contained in UGrabber3
+																				// it doesn't actually call the function but rather tells the method where to go to call
+																				// call it when we press our R Mouse Button
+
+		InputComponent->BindAction("Grab", IE_Released, this, &UGrabber3::Release);
+	}	
+}
+
+// Checking for Physics Handle Component
+void UGrabber3::FindPhysicsHandle()
+{
+	
 	PhysicsHandle = GetOwner() -> FindComponentByClass<UPhysicsHandleComponent>();
 	if (PhysicsHandle)
 	{
@@ -35,28 +54,23 @@ void UGrabber3::BeginPlay()
 	{
 		UE_LOG(LogTemp, Error, TEXT("No Physics Handle componenet found: %s"), *GetOwner()->GetName());
 	}
-
-	InputComponent = GetOwner() -> FindComponentByClass<UInputComponent>();
-	if (InputComponent)
-	{		
-		InputComponent->BindAction("Grab", IE_Pressed, this, &UGrabber3::Grab); // This is the address of the Grab function which is contained in UGrabber3
-																				// it doesn't actually call the function but rather tells the method where to go to call
-																				// call it when we press our R Mouse Button
-
-		InputComponent->BindAction("Grab", IE_Released, this, &UGrabber3::Release);
-	}
-
-			
 }
 
 void UGrabber3::Grab()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Grabber Pressed"));
+	UE_LOG(LogTemp, Warning, TEXT("Grabber Pressed"));	
+
+	//If we hit something then attach the physics handle
+
+	//TODO attach physics handle 
+
+	GetFirstPhysicsBodyInReach();
 }
 
 void UGrabber3::Release()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Grabber Released"));
+	//TODO remove/release the physics handle
 }
 
 // Called every frame
@@ -64,7 +78,16 @@ void UGrabber3::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompon
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	//Get player's location
+	// If physics handle is attached
+		//Move the object we are holding
+
+	
+
+}
+
+FHitResult UGrabber3::GetFirstPhysicsBodyInReach() const
+{
+	//Get player's viewpoint
 	FVector PlayerViewPointLocation;
 	FRotator PlayerViewPointRotation;
 
@@ -73,26 +96,8 @@ void UGrabber3::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompon
 		OUT PlayerViewPointRotation
 	);
 
-	
-	// Draw a line from player showing the reach	
 	FVector LineTraceEnd = PlayerViewPointLocation + PlayerViewPointRotation.Vector() * Reach;
-
-	DrawDebugLine(
-		GetWorld(),
-		PlayerViewPointLocation,
-		LineTraceEnd,
-		FColor(0, 255, 0),
-		false, 
-		0.f,
-		0,
-		5.f 
-	);
 	
-	// Logging out to test
-	
-	// Get players viewpoint
-	//Controller.GetPlayerViewPoint();
-
 	// Ray-cast out to a certain distance (reach) // private member variable
 	FHitResult Hit;
 	FCollisionQueryParams TraceParams(FName(TEXT("")), false, GetOwner());
@@ -113,5 +118,6 @@ void UGrabber3::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompon
 		UE_LOG(LogTemp, Warning, TEXT("Line trace has hit %s"), *(ActorHit->GetName()));
 	}	
 
+	return Hit;
 }
-
+	
