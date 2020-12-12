@@ -38,4 +38,11 @@ private:
 	
 	// Return the fist Actor within reach with physics body
 	FHitResult GetFirstPhysicsBodyInReach() const;	
+
+	// Return the Line Trace End
+	FVector GetPlayerReach() const;
+
+	// Get Player's position in the World
+	FVector GetPlayerWorldPos() const;
+
 };
